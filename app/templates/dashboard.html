@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Log Analysis Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Log Analysis Dashboard</h1>
+
+    <div id="top-endpoints" style="margin-bottom: 40px;"></div>
+    <div id="error-rate" style="margin-bottom: 40px;"></div>
+    <div id="status-codes" style="margin-bottom: 40px;"></div>
+    <div id="hourly-distribution" style="margin-bottom: 40px;"></div>
+    <div id="daily-distribution" style="margin-bottom: 40px;"></div>
+    <div id="top-ips" style="margin-bottom: 40px;"></div>
+    <div id="top-urls" style="margin-bottom: 40px;"></div>
+
+    <script>
+    window.onload = function () {
+
+        // 🔹 Top Endpoints
+        fetch('/top-endpoints')
+            .then(res => res.json())
+            .then(data => {
+                let endpoints = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('top-endpoints', [{
+                    x: endpoints,
+                    y: counts,
+                    type: 'bar'
+                }], {title: 'Top Endpoints'});
+            });
+
+        // 🔹 Error Rate
+        fetch('/error-rate')
+            .then(res => res.json())
+            .then(data => {
+                Plotly.newPlot('error-rate', [{
+                    values: [data.error_rate, 100 - data.error_rate],
+                    labels: ['Errors', 'Success'],
+                    type: 'pie'
+                }], {title: 'Error Rate'});
+            });
+
+        // 🔹 Status Code Distribution
+        fetch('/status-codes')
+            .then(res => res.json())
+            .then(data => {
+                let codes = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('status-codes', [{
+                    x: codes,
+                    y: counts,
+                    type: 'bar'
+                }], {title: 'Status Code Distribution'});
+            });
+
+        // 🔹 Hourly Distribution
+        fetch('/hourly-distribution')
+            .then(res => res.json())
+            .then(data => {
+                let hours = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('hourly-distribution', [{
+                    x: hours,
+                    y: counts,
+                    type: 'bar',
+                    marker: { color: 'darkorange' }
+                }], {
+                    title: 'Hourly Traffic Distribution',
+                    xaxis: { title: 'Hour (0 - 23)' },
+                    yaxis: { title: 'Number of Requests' }
+                });
+            });
+
+        // 🔹 Daily Distribution
+        fetch('/daily-distribution')
+            .then(res => res.json())
+            .then(data => {
+                let days = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('daily-distribution', [{
+                    x: days,
+                    y: counts,
+                    type: 'bar',
+                    marker: { color: 'seagreen' }
+                }], {
+                    title: 'Daily Traffic Distribution',
+                    xaxis: { title: 'Day of the Week' },
+                    yaxis: { title: 'Number of Requests' }
+                });
+            });
+
+        // 🔹 Top IPs
+        fetch('/top-ips')
+            .then(res => res.json())
+            .then(data => {
+                let ips = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('top-ips', [{
+                    x: ips,
+                    y: counts,
+                    type: 'bar',
+                    marker: { color: 'purple' }
+                }], {
+                    title: 'Top IP Addresses',
+                    xaxis: { title: 'IP Address' },
+                    yaxis: { title: 'Number of Requests' }
+                });
+            });
+
+        // 🔹 Top URLs
+        fetch('/top-urls')
+            .then(res => res.json())
+            .then(data => {
+                let urls = Object.keys(data);
+                let counts = Object.values(data);
+                Plotly.newPlot('top-urls', [{
+                    x: urls,
+                    y: counts,
+                    type: 'bar',
+                    marker: { color: 'teal' }
+                }], {
+                    title: 'Top Requested URLs',
+                    xaxis: { title: 'URL' },
+                    yaxis: { title: 'Number of Hits' }
+                });
+            });
+    };
+    </script>
+</body>
+</html>
