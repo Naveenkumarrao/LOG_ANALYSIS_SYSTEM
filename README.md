@@ -1,144 +1,88 @@
 # 🔍 Log File Analysis & Reporting System
 
-A command-line and web-based system that parses Apache-style access logs, stores them in a MySQL database, and provides insightful analytics through a PHP + Chart.js dashboard.
+A Python Flask-based log analyzer that processes Apache-style access logs, stores them in a MySQL database, and provides interactive reports via a Chart.js dashboard.
 
 ---
 
 ## 📁 Project Structure
 
-```
-Project-1-log-analysis-and-report/
+log-analysis-system/
 │
-├── dashboard/                  # PHP Web Dashboard
-│   ├── index.php               # Main dashboard UI
-│   ├── reports.php             # API for chart/report data
-│   ├── db.php                  # MySQL connection handler
-│   ├── style.css               # Styling for dashboard
-│   └── main.js                 # Chart logic and fetch requests
+├── app/
+│ ├── init.py # Package initializer
+│ ├── analysis.py # Business logic for data analysis
+│ ├── api.py # Flask app with API endpoints
+│ ├── db.py # MySQL database connection
+│ ├── log_parser.py # Log parsing logic
+│ ├── mysql_handler.py # Log insertion into MySQL
+│ ├── parser.py # Regex-based parsing
+│ └── templates/
+│ └── dashboard.html # HTML dashboard UI
 │
-├── log_analyzer_cli/           # Python CLI Tool
-│   ├── main.py                 # CLI entry point
-│   ├── log_parser.py           # Parses Apache logs using regex
-│   ├── mysql_handler.py        # Handles MySQL inserts and queries
-│   ├── config.ini              # DB credentials and regex config
-│   ├── generate_realistic_logs.py # Generates sample logs for testing
-│   ├── requirements.txt        # Python dependencies
-│   ├── sample_logs/            # Folder containing sample logs
-│   └── sql/                    # SQL scripts to create DB tables
-```
-
----
+├── data/
+│ ├── access_log.log # Sample Apache log file
+│
+├── create_table.sql # SQL script to create logs table
+├── load_to_mysql.py # CLI tool to load logs into MySQL
+├── main.py # CLI entry point
+├── requirements.txt # Python package dependencies
+└── README.md # Project documentation
 
 ## 🚀 Features
 
-- ✅ Command-line interface for log processing
-- ✅ Apache log parsing using regex
-- ✅ Device/OS/User-Agent extraction
-- ✅ MySQL database storage
-- ✅ PHP + Chart.js dashboard with:
+- Flask REST API for log analytics
+- Parses Apache log format
+- MySQL integration for persistent storage
+- CLI script to ingest logs
+- Chart.js-powered interactive dashboard
+- Endpoints:
   - Status Code Distribution
-  - Hourly Traffic Report
-  - OS/Device Distribution
-  - Top IP Addresses
-  - Top Requested URLs
+  - Hourly & Daily Requests
+  - Top IPs, URLs
+  - Error Rate and more
 
----
+  ## 🐍 Usage Instructions
 
-## 🐍 CLI Usage (Python)
-
-```bash
-# Process a log file
-python main.py process_logs sample_logs/access.log
-
-# Generate specific reports
-python main.py generate_report status_code_distribution
-python main.py generate_report hourly_traffic
-python main.py generate_report os_distribution
-python main.py generate_report top_n_ips 5
-python main.py generate_report top_n_urls 5
-```
-
----
-
-## 🌐 Web Dashboard (PHP)
-
-Start the built-in PHP server:
-
-```bash
-cd dashboard
-php -S localhost:8000
-```
-
-Then open in your browser: [http://localhost:8000](http://localhost:8000)
-
----
-
-## ⚙ Configuration
-
-Edit `config.ini` to update MySQL and regex details:
-
-```ini
-[mysql]
-host = localhost
-port = 3306
-user = root
-password = your_password
-database = project1
-
-[log]
-regex = ^(?P<ip>[\d\.]+) - - \[(?P<datetime>[^\]]+)\] "(?P<request>[^"]+)" (?P<status>\d{3}) (?P<size>\d+|-) "(?P<referrer>[^"]*)" "(?P<user_agent>[^"]+)"
-```
-
----
-
-## 📦 Dependencies
-
-### Python
-- `mysql-connector-python`
-- `tabulate`
-- `argparse`, `logging`, `re` (built-in)
-
-Install using:
+### 1. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
-```
 
-### PHP
-- PHP 8+
-- MySQLi or PDO extension enabled
+#Set up MySQL Table
+mysql -u root -p < create_table.sql
 
----
 
-## 🛠 SQL Schema
+ #Load Log File into MySQL
+python load_to_mysql.py data/access_log.log
 
-Run the following SQL script (found in `sql/create_table.sql`) to create the required table:
+#Start the Flask App
+python app/api.py
 
-```sql
-CREATE TABLE logs (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  ip VARCHAR(45),
-  datetime DATETIME,
-  method VARCHAR(10),
-  url TEXT,
-  protocol VARCHAR(10),
-  status_code INT,
-  response_size INT,
-  user_agent TEXT,
-  os VARCHAR(50),
-  device VARCHAR(50)
-);
-```
+#Then open your browser and navigate to:
+http://127.0.0.1:5000/dashboard
 
----
+⚙ Configuration
+Edit db.py to configure your MySQL credentials
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="root",
+    database="log_analysis"
+)
 
-## 📧 Author
 
-Developed by **Naveen Kumar Rao**  
-📫 Contact: [your-email@example.com] *(Replace with your actual email or GitHub)*
+ Requirements
+Python 3.8+
 
----
+Flask
 
-## 📝 License
+mysql-connector-python
 
-This project is open-source and free to use for learning and development purposes.
+pandas
+
+Chart.js (for frontend dashboard)
+
+👨‍💻 Author
+Naveen Kumar Chennamaneni
+📧 naveenkumarchennamaneni@gmail.com
+
