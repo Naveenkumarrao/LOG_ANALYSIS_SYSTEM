@@ -34,7 +34,8 @@ log-analysis-system/
 - Parses Apache log format
 - MySQL integration for persistent storage
 - CLI script to ingest logs
-- Chart.js-powered interactive dashboard
+
+
 - Endpoints:
   - Status Code Distribution
   - Hourly & Daily Requests
@@ -66,21 +67,16 @@ Edit db.py to configure your MySQL credentials
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="your-password",
     database="log_analysis"
 )
 
 
  Requirements
 Python 3.8+
-
-Flask
-
+sql
+flask
 mysql-connector-python
-
-pandas
-
-Chart.js (for frontend dashboard)
 
 👨‍💻 Author
 Naveen Kumar Chennamaneni
